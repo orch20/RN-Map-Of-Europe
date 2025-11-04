@@ -1,10 +1,12 @@
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 
 import { Animated, PanResponder, StyleSheet, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import EuropeMapSvg from '../../assets/EuropeMapSvg';
 
 
 const MapOfEurope = () => {
+  const navigation = useNavigation();
   const translation = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
 
   const panResponder = useRef(
@@ -32,13 +34,27 @@ const MapOfEurope = () => {
     }),
   ).current;
 
+  const handleCountryPress = useCallback(
+    (countryName, countryId) => {
+      if (!countryName) {
+        return;
+      }
+
+      navigation.navigate('CountryDetails', {
+        countryName,
+        countryId,
+      });
+    },
+    [navigation],
+  );
+
   return (
     <View style={styles.container}>
       <Animated.View
         {...panResponder.panHandlers}
         style={[styles.mapWrapper, { transform: translation.getTranslateTransform() }]}
       >
-        <EuropeMapSvg style={styles.map} />
+        <EuropeMapSvg style={styles.map} onCountryPress={handleCountryPress} />
       </Animated.View>
     </View>
   );

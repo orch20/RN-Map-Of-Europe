@@ -1,19 +1,8 @@
 import * as React from "react";
 import Svg, { Path, Circle } from "react-native-svg";
-const EuropeMapSvg = (props) => (
-  <Svg
-    baseProfile="tiny"
-    fill="#ececec"
-    height={684}
-    stroke="black"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    strokeWidth={0.1}
-    viewBox="0 0 1000 684"
-    // width={1000}
-    xmlns="http://www.w3.org/2000/svg"
-    {...props}
-  >
+
+const rawShapes = (
+  <>
     <Path
       d="M654.7 528.1l0.5 0.4 2 2.9 1.4 0.5 1.9 1.3 1.4 3.2 0.1 2.2-0.5 2.6 0.3 2.1-0.8 0.8 0.7 2 0.2 1.9 1.2 2.2 1.2 1.1 1.3 2.4 1.6-0.2 1.3 1.1 0 1.1 1.1 1.8-0.8 2.6-1.7 0.8-1.2 3.1-0.3 2-0.6 0.5-1.9 0.3-1.7 1.3 1 2.2-0.9 0.7-0.3 1.5-0.7 0.7-2.7-0.9-0.7-2.5-1.7-2.7-4.9-2.6-1.2-1.1 0.4-1.5-0.1-1.4-1.4-2.4 0.3-2.6 0.8-2.2-0.3-2.7 0.1-2.1-0.7-2.9 0.5-2.1 0.9-1.3-0.2-2.2-1.5-1.1-1.6-0.2 0-3.1-0.3-0.6 1.7 0-1.7-2.8 3.2-5.3 1.1 0.3 0.8 2.1 3.4-1.2z"
       id="AL"
@@ -242,6 +231,50 @@ const EuropeMapSvg = (props) => (
     <Circle cx={399.9} cy={390.8} id={0} />
     <Circle cx={575.4} cy={412} id={1} />
     <Circle cx={521} cy={266.6} id={2} />
-  </Svg>
+  </>
 );
+
+const EuropeMapSvg = ({ onCountryPress, ...props }) => {
+  const shapes = React.useMemo(
+    () =>
+      React.Children.map(rawShapes.props.children, (child) => {
+        if (!React.isValidElement(child)) {
+          return child;
+        }
+
+        if (child.type === Path && onCountryPress) {
+          const { name, id } = child.props;
+          const countryName = name ?? id ?? "";
+
+          return React.cloneElement(child, {
+            onPress: () => onCountryPress(countryName, id),
+            accessible: true,
+            accessibilityRole: "button",
+            accessibilityLabel: countryName,
+          });
+        }
+
+        return child;
+      }),
+    [onCountryPress],
+  );
+
+  return (
+    <Svg
+      baseProfile="tiny"
+      fill="#ececec"
+      height={684}
+      stroke="black"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={0.1}
+      viewBox="0 0 1000 684"
+      // width={1000}
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      {shapes}
+    </Svg>
+  );
+};
 export default EuropeMapSvg;
