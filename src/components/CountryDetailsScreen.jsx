@@ -7,7 +7,7 @@ const CountryDetailsScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.countryName}>{countryName ?? 'Невідома країна'}</Text>
+      <Text style={styles.countryName}>{countryName ?? 'unknown country'}</Text>
       {countryId ? <Text style={styles.countryCode}>{countryId}</Text> : null}
     </View>
   );

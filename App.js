@@ -16,13 +16,13 @@ export default function App() {
         <Stack.Screen
           name="Map"
           component={MapOfEurope}
-          options={{ title: 'Карта Європи' }}
+          options={{ title: 'App of Europe Map' }}
         />
         <Stack.Screen
           name="CountryDetails"
           component={CountryDetailsScreen}
           options={({ route }) => ({
-            title: route.params?.countryName ?? 'Деталі країни',
+            title: route.params?.countryName ?? 'Country Details',
           })}
         />
       </Stack.Navigator>
